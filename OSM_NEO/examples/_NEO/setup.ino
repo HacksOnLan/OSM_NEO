@@ -5,7 +5,7 @@ void OSMsetup(void)
 {
     /// POWER LDO
     pinMode(LDO, OUTPUT);// Prep Output power to LDO
-    digitalWrite(LDO, HIGH); // Power LDO ON
+    //digitalWrite(LDO, HIGH); // Power LDO ON
 	
 	randomSeed(analogRead(0));
 	
@@ -17,14 +17,15 @@ void OSMsetup(void)
 	pinMode(DEBUG, OUTPUT); // Debug Pin on Pin 14
 	digitalWrite(RED, LOW);
 	digitalWrite(GREEN, LOW);
-    digitalWrite(BLUE, HIGH); // BLUE ON (just to know that we are here)
+    digitalWrite(BLUE, LOW); // BLUE ON (just to know that we are here)
+	digitalWrite(BLUE_ARD, LOW);
 }
 
 
 void SerialSetup(void)
 {
 	Serial.begin(57600); // opens serial port, sets data rate to 9600 bps
-	Serial.println(F("NEO v1.0 with MMA7660 support.")); Serial.println();
+	Serial.println(F("> Serial ON")); Serial.println();
 
 #if defined(VISUAL)
 Serial.println(F("VISUAL ENVIRONMENT VERSION")); Serial.println();

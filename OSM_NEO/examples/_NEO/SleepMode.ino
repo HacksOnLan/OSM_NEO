@@ -14,92 +14,123 @@ void Mode_00(void)// Blank Sleep
 	//osmPWM_Plane(0, 128, 0, 10);
 	
 	#if defined(VISUAL)
-		Serial.println(F("SLEEP..."));   Serial.println();
+	Serial.println();
+	Serial.println(F("IDLE..."));
 	#endif
 
 	osmPWM_Plane(0, 0, 0, 10);
 
-	MMA7660.standby();
-	delay(30);
-	//digitalWrite(LDO, LOW); // Power LDO off
+
 	
-	        sleep_enable();
-	        sei();
-	        sleep_cpu();
-	        sleep_disable();
-	
-	//LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);//////// DEEP SLEEP
 	/////////////////////////////////////////////////////////////////////////
+	
+	//UserCmodes[CurrentUserBundle][CurrentUserMode];
+	
+	eeCheck();
+	EEPROM.write(2,CurrentUserBundle);eeCheck();
+	EEPROM.write(3,1);eeCheck();
+	 
+	
+	long CountDownSleep =300;
+	while ( (CountDownSleep > 0) && (digitalRead (BUTTON) == HIGH) )
+	{
+		CountDownSleep--;
+		osmPWM_Plane(0, 0, 0, 100);
+	}
+	
+	Serial.println(F("... SLEEP~"));
+	if (digitalRead (BUTTON) == LOW)
+	{
+		goto OutOfSleep;
+	}
+
+
+	//// Watchdog Reset	////////////
+	MMA7660.standby();
+	digitalWrite(LDO, LOW); // Power LDO off
+	delay(30);
+	
+	wdt_enable(WDTO_15MS);
+	while(1)
+	{
+		;
+	}
+	/////////////////////////////////
+	
 	/////////////////////////////////////////////////////////////////////////
 	// THE PROGRAM CONTINUES FROM HERE AFTER WAKING UP
 	
 	
+	OutOfSleep:
+	
 	delay(30);
 	
 	#if defined(VISUAL)
-		Serial.println();
-		Serial.println(F("wakey wakey..."));   Serial.println();Serial.println();
+	Serial.println();
+	Serial.println(F("... wakey wakey!"));
 	#endif
+
 	
-	digitalWrite(LDO, HIGH); // Power LDO ON
-	delay(100);
-	MMA7660.init();
-	
-	
+	//////////////////////////////////////////////////////
+	delay(4000);
+	//MMA7660.init();
 	// check zflip here
 	zAcc = 0;
-	delay(4000);
+	delay(40);
 	MMA7660.getRaw(&xAcc,&yAcc,&zAcc);
 	Serial.print(F("  Z: "));Serial.println(zAcc);
-	
-	
 	if (zAcc > 37)
 	{
 		Zflipped = 1;
 		zAcc = 0;
 		// check zflip here
 	}
+	//////////////////////////////////////////////////////
 	
+	CurrentUserBundle=0;// added
 	Zflip();
-    ZNflip();
+	ZNflip();
 	
 	
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
 
-noInterrupts();	// disable interrupts
+	noInterrupts();	// disable interrupts
 
-if (AllYourBaseAreBelongToUs)// full blast factory reset
-{// AllYourBaseAreBelongToUs
-	// reset here
-	eepromWrite(0,0);
-	eeCheck();
-	eepromWriteFactory();
-	eepromLoad();
-	BLINKPWM(150,150,150 ,300,10);
-	AllYourBaseAreBelongToUs = 0;
-}// AllYourBaseAreBelongToUs
+	if (AllYourBaseAreBelongToUs)// full blast factory reset
+	{// AllYourBaseAreBelongToUs
+		// reset here
+		eepromWrite(0,0);
+		eeCheck();
+		eepromWriteFactory();
+		eepromLoad();
+		BLINKPWM(150,150,150 ,300,10);
+		AllYourBaseAreBelongToUs = 0;
+	}// AllYourBaseAreBelongToUs
 
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
 
-CurrentOffCounter = 0;
-BPM_Counter=0;
-MaxUserModes = UserCmodes[CurrentUserBundle][0];
-CurrentUserMode = 1;
-Mode = UserCmodes[CurrentUserBundle][CurrentUserMode]; // Mode 1
-ToBorNotToB = 1;
-osmPWM_Plane(0, 0, 0, 5);
-Zflipped = 0;
-OFF_MODE = 0;
-STATE = 1;
-Click = 0;
-Int0count = 0;
+	CurrentOffCounter = 0;
+	BPM_Counter=0;
+	MaxUserModes = UserCmodes[CurrentUserBundle][0];
+	CurrentUserMode = 1;
+	Mode = UserCmodes[CurrentUserBundle][CurrentUserMode]; 
+	ToBorNotToB = 1;
+	osmPWM_Plane(0, 0, 0, 5);
+	Zflipped = 0;
+	OFF_MODE = 0;
+	STATE = 1;
+	Click = 0;
+	Int0count = 0;
 
-interrupts(); // enable interrupts
+	interrupts(); // enable interrupts
 	
 }// MODE 00
 /////////////////////////////////////////////
+
+
+
 
 
 

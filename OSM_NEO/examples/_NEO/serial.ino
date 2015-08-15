@@ -148,7 +148,7 @@ void PrintWelcome1(void)
   //Serial.println(F("#    # #    # #    #    ###    #######  #####  #     #    ###     ####   ####  #####  ######  ####"));
   
   Serial.println();
-  Serial.println(F(" www.OSM.codes / NEO v0.1 / Open Source Microlight "));
+  Serial.println(F(" www.OSM.codes / NEO v1.1.2 / Open Source Microlight "));
   Serial.println();
 #endif  
 }

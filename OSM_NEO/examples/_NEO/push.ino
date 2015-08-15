@@ -40,6 +40,9 @@ void PushYed(void)
 			Click = 0;
 			STATE = 0;
 			VARIATION = 0;// Reset Change
+			eeCheck();
+			EEPROM.write(2,CurrentUserBundle);eeCheck();
+			EEPROM.write(3,CurrentUserMode);eeCheck();
 			
 		}// fi Click
 	  
