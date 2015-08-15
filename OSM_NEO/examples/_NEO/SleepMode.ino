@@ -13,6 +13,8 @@ void Mode_00(void)// Blank Sleep
 	
 	//osmPWM_Plane(0, 128, 0, 10);
 	
+	eeCheck();EEPROM.write(5,1);eeCheck();// went to sleep
+	
 	#if defined(VISUAL)
 	Serial.println();
 	Serial.println(F("IDLE..."));
@@ -30,13 +32,15 @@ void Mode_00(void)// Blank Sleep
 	EEPROM.write(2,CurrentUserBundle);eeCheck();
 	EEPROM.write(3,1);eeCheck();
 	 
-	
-	long CountDownSleep =300;
+
+
+	long CountDownSleep = 1800;// seconds
 	while ( (CountDownSleep > 0) && (digitalRead (BUTTON) == HIGH) )
 	{
 		CountDownSleep--;
-		osmPWM_Plane(0, 0, 0, 100);
+		osmPWM_Plane(0, 0, 0, 10);
 	}
+
 	
 	Serial.println(F("... SLEEP~"));
 	if (digitalRead (BUTTON) == LOW)
@@ -87,10 +91,8 @@ void Mode_00(void)// Blank Sleep
 	}
 	//////////////////////////////////////////////////////
 	
-	CurrentUserBundle=0;// added
 	Zflip();
 	ZNflip();
-	
 	
 	////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////
@@ -116,6 +118,8 @@ void Mode_00(void)// Blank Sleep
 	MaxUserModes = UserCmodes[CurrentUserBundle][0];
 	CurrentUserMode = 1;
 	Mode = UserCmodes[CurrentUserBundle][CurrentUserMode]; 
+	eeCheck();EEPROM.write(5,0);eeCheck();// did not went to sleep
+	
 	ToBorNotToB = 1;
 	osmPWM_Plane(0, 0, 0, 5);
 	Zflipped = 0;
@@ -138,6 +142,12 @@ void Mode_00(void)// Blank Sleep
 
 void Zflip(void)
 {// void Zflip
+	
+	if (Zflipped)
+	{
+		CurrentUserBundle=0;// thank you Omar! (moved this line here)
+	}
+		
 	while ((digitalRead (BUTTON) == LOW)  && (Zflipped))
 	{// while Zflipped
 		

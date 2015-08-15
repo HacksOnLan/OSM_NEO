@@ -10,12 +10,15 @@ __      ____      ____      __     | |  | | (___ | \  / |       ___ ___   __| | 
 6a 75 73 74 20 6e 65 65 64 20 74 6f 20 70 75 74 20 69 74 20 69 6e 20 70 72 61 63 74 69 63 65 2e 0d 0a
 /*******************************************************************************
 * NEO for the Open Source Microlight
-* Version: 1.1.1B
-* Date: 08-13-2015
+* Version: 1.1.4b
+* Date: 08-15-2015
 * Company: Quantum Hex LLC
 * Author: Ramiro Montes De Oca
 * Product Page: http://www.osm.codes
 * Support: http://support.osm.codes
+* Facebook Users Group: https://www.facebook.com/groups/osmModeSwap/
+* Facebook Dev Group: https://www.facebook.com/groups/OSMdevelopers/
+* Facebook Product Page: https://www.facebook.com/osmcodes
 *
 * This Software is licensed under Creative Commons Attribution-ShareAlike 4.0
 *
@@ -23,14 +26,23 @@ __      ____      ____      __     | |  | | (___ | \  / |       ___ ___   __| | 
 * ========  ===========
 * 1.00      Initial public release.
 * 1.01      Fix "Deadly Sleep" on some chips causing the chip to die after going to sleep mode.
-* 1.1.2b    Super stable v1 so far.
-            - "Deadly Sleep" fixed
+* 1.1.2b    - "Deadly Sleep" fixed
             - No skip to next mode after sleep from v1.2
-            - Added safty valve to Reset. You must reset after Off mode before 30 seconds of Off.(Backpack Proof).
+            - Added safety valve to Reset. You must reset after Off mode before 30 seconds of Off.(Backpack Proof).
             - Saves mode if the there is a battery glitch.
             - Bundle is not lost if you remove the battery.
             - Minor comment fix 
             KNOWN ISSUES: Color Pallete. It's being fixed on v1.2.2
+* 1.1.3b    5 AM Omar's Edition 
+            - "I don't think my chips remember which bundle they are on?" Fixed	
+* 1.1.4b    This will try to fix a initiation timing that caused some chips not
+            to work properly. This was a 50%-50% chances of having a not working chip.
+            This hardware/software glitch affected v1.1.2b an v1.1.3b
+            Thanks Theo Dee for spot the bug. 
+            The safety valve for this chip before going to deep sleep it's 18 seconds.
+            You have 18 seconds to do master reset or bundle changes. Once you click
+            before those 18 seconds you have all the time in the world to proceed with 
+            you changes.                  
 *******************************************************************************/
 
 // Author's Contributions:
@@ -87,7 +99,7 @@ Libraries:
 /// THE PROGRAM STARTS HERE ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-
+//#define EEPROM_DEBUG
 #define VISUAL // COMMENT TO DISABLE VISUAL NAVIAGTION
 #define ACCEL_MMA7660 // ACCELEROMETER ENABLED
 #define RED      9   // RED LED
@@ -98,7 +110,6 @@ Libraries:
 #define DEBUG    7   // DEBUG PIN
 
 #include "LowPower.h"    // LOW POWER SLEEP (OPTION A)
-//#include <avr/sleep.h>   // USED FOR SLEEP FUNCITON
 #include <Wire.h>        // I2C LIBRARY
 #include <EEPROM.h>      // EEPROM READ AND WRITE
 #include <avr/pgmspace.h>// MEMORY SAVING LIBRARY
@@ -371,7 +382,7 @@ volatile byte BPM_Selector;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION ///
-volatile  byte CurrentVersion = 254;         // CHANGE THIS NUMBER IF YOU WANT TO SAVE A NEW FACTORY DEFAULT ///
+volatile  byte CurrentVersion = 202;         // CHANGE THIS NUMBER IF YOU WANT TO SAVE A NEW FACTORY DEFAULT  BETWEEN 1 AND 254  <----
 //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -402,20 +413,20 @@ const PROGMEM  uint8_t ModeSetFLASH [13][36]= // FACTORY DEFAULT
 	5,1,    1,0,  9,0,  21,0,  5,0,  11,0,  0,0,  0,0,  0,13,   // Mode 7 // Prime A
 	1,1,    0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,14,   // Mode 7 // Prime B
 
-	5,1,    1,0,  9,0,  21,0,  5,0,  11,0,  0,0,  0,0,  0,13,   // Mode 8 // Prime A
-	1,1,    0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,14,   // Mode 8 // Prime B
+	5,1,    1,0,  9,0,  21,0,  5,0,  11,0,  0,0,  0,0,  0,15,   // Mode 8 // Prime A
+	1,1,    0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,16,   // Mode 8 // Prime B
 
 	1,1,    0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,17,   // Mode 9 // Prime A
 	1,1,    0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,18,   // Mode 9 // Prime B
 
-	4,1,    1,0,  9,0,  21,0,  5,0,  11,0,  3,0,  17,0,  22,19,   // Mode 10 // Prime A
-	3,1,    1,0,  9,0,  21,0,  5,0,  11,0,  3,0,  17,0,  22,20,    // Mode 10 // Prime B
+	4,1,    1,0,  9,0,  21,0,  5,0,  0,0,  0,0,  0,0,  0,19,   // Mode 10 // Prime A
+	3,1,    1,0,  9,0,  21,0,  0,0,  0,0,  0,0,  0,0,  0,20,    // Mode 10 // Prime B
 
 	3,1,  9,0,  1,3,  23,0,  0,0,  0,0,  0,0,  0,0,  0,21,    // Mode 11  // Prime A
-	4,1,  11,0,  24,0,  3,0,  0,0,  0,0,  0,0,  0,0,  0,22,    // Mode 11  // Prime B
+	4,1,  11,0,  24,0,  3,0,  7,0,  0,0,  0,0,  0,0,  0,22,    // Mode 11  // Prime B
 
-	4,1,    1,0,  9,0,  21,0,  5,0,  11,0,  3,0,  17,0,  22,23,   // Mode 12 // Prime A
-	4,1,    1,0,  9,0,  21,0,  5,0,  11,0,  3,0,  17,0,  22,24,   // Mode 12 // Prime B
+	4,1,    1,0,  9,0,  21,0,  5,0,  0,0,  0,0,  0,0,  0,23,   // Mode 12 // Prime A
+	4,1,    1,0,  9,0,  21,0,  5,0,  0,0,  0,0,  0,0,  0,24,   // Mode 12 // Prime B
 
 	1,1,    0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,25,   // Mode 13 // Prime A // RESERVED
 	1,1,    0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,0,  0,26   // Mode 13 // Prime B // RESERVED
@@ -475,64 +486,74 @@ volatile byte Mode = UserCmodes[0][1];
 
 
 
-		
+
+
+
+
 // the setup function runs once when you press reset or power the board
 void setup()
 { // void setup
-			
-	OSMsetup();       // Sets I/O @ setup.ino
-
-	attachInterrupt(0, pushInterrupt, FALLING); // Interrupt on Push Button (Digital 2)
-	delay(100);
-	LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);//////// DEEP SLEEP	
 	
-	noInterrupts();
+	boolean WentToSleep = 0;
+	OSMsetup();       // Sets I/O @ setup.ino
 	TimerMax();       // Sets Timers @ setup.ino
 	
+	eeCheck();
+	WentToSleep = EEPROM.read(5);eeCheck();
 	
-	int ReverseCounter = 3000;
-	while (ReverseCounter > 0)
+	attachInterrupt(0, pushInterrupt, FALLING); // Interrupt on Push Button (Digital 2)
+	
+	
+	if (WentToSleep)
 	{
-		//digitalWrite(GREEN, HIGH);
-		ReverseCounter--;
-		delay(10);
+		LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);//////// DEEP SLEEP
 	}
-	digitalWrite(GREEN, LOW);
 	
+	digitalWrite(LDO, HIGH); // Power LDO ON
+	
+	noInterrupts();
+	while (digitalRead (BUTTON) == LOW)
+	{
+	WentToSleep = 1;
+	}
+	interrupts();
 	
 	SerialSetup();    // Sets Serial i/o @ setup.ino
-	
-		#if defined(VISUAL)
-		Serial.println();
-		Serial.println(F("... wakey wakey!"));
-		#endif
-		
-	digitalWrite(LDO, HIGH); // Power LDO ON
-	interrupts();
 	MMA7660.init();
-	noInterrupts();
-
 	PrintWelcome1(); // This is the welcome intro for the Serial Communication
 	eepromWriteFactory();// Factory Reset (if)
-	interrupts();
 	eepromLoad();// Load EEPROM to SRAM
-	interrupts();
 	PrintWelcome2();
 	AnalogBlank(); // turn off LED
 	STATE = 1;
 	VARIATION = 0;
-	digitalWrite(LDO, HIGH); // Power LDO
-	
 
+        /// this will take care of after sleep or battery hiccups
 		eeCheck();
 		CurrentUserBundle = EEPROM.read(2);eeCheck();
-		CurrentUserMode   = EEPROM.read(3);eeCheck();
+		if (WentToSleep)
+		{
+			 CurrentUserMode = 1 ;
+	    }
+		else
+		{
+			CurrentUserMode   = EEPROM.read(3);eeCheck();
+		}
+		MaxUserModes = UserCmodes[CurrentUserBundle][0];
 		Mode = UserCmodes[CurrentUserBundle][CurrentUserMode];
-	    
-	//DumpEEprom(); // FOR DEBUG
-	//DumpSRAM();   // FOR DEBUG
+	WentToSleep = 0;	
+	eeCheck();EEPROM.write(5,0);eeCheck();// did not went to sleep
+	
+	#if defined(EEPROM_DEBUG)
+	DumpEEprom(); // FOR DEBUG
+	DumpSRAM();   // FOR DEBUG
+	#endif
+	
     interrupts();
 }// diov setup
+
+
+
 
 
 
@@ -930,7 +951,7 @@ JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 11 && GLOBALCHANGE )// Mode
 { //while mode
 //                 (//------------ACCEL SETTINGS--------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-osm_MASTER_BUILDER (      1,       2,        100,             10,       5,         12,        3,    0,    0,        10,       8,         12,        2,    0,    0     ) ;
+osm_MASTER_BUILDER (      1,       2,        100,             8,       5,         12,        3,    0,    0,        1,       8,         12,        2,    0,    0     ) ;
 //                 (  Acc_Select  Axis  AccSensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB  //) ;
 //// Accelerometer:
 //// 0 = No_Accelerometer

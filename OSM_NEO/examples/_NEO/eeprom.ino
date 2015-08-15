@@ -65,6 +65,16 @@ void eepromWriteFactory(void)
 			Serial.print(F(">...UPLOADING NEW VERSION "));
 		#endif
 		
+		byte DeleteCounter = 19;
+		while (DeleteCounter > 0)
+		{
+			eeCheck();EEPROM.write(DeleteCounter,0);eeCheck();
+			DeleteCounter--;
+		} 
+		
+		eeCheck();EEPROM.write(2,0);eeCheck();
+		eeCheck();EEPROM.write(3,1);eeCheck();
+		
 		PROGset = 0;
 		PROGMEMbank = 0;
 		EEbank = 0;
@@ -156,122 +166,122 @@ void eepromLoad(void)
 				 //
 
 
+#if defined(EEPROM_DEBUG)
 
-
-/////// LOAD EEPROM
-//void DumpSRAMss(void)
-//{// void eepromLoad
-	//noInterrupts();
-	//eeCheck();
-	//EEbank = 20;
-	//PROGset = 0;
-	//PROGMEMbank = 0;
-	//
-	//while (EEbank != 488)// was 884
-	//{
-		//ModeSetSRAM[PROGset][PROGMEMbank] = eepromRead(EEbank);
-		//EEbank++;
-		//PROGMEMbank++;
-		//if (PROGMEMbank == 36) {PROGset++; PROGMEMbank=0;}
-		//eeCheck();
-	//}
-	//eeCheck();
-	//Serial.print(F(">LOADED.... EEPROM VERSION "));
-	//Serial.print(eepromRead(0),DEC);
-	//Serial.println(F(" TO SRAM!"));
-	//interrupts();
-	//
-//}// diov eepromLoad
-
-
-
+///// LOAD EEPROM
+void DumpSRAMss(void)
+{// void eepromLoad
+	noInterrupts();
+	eeCheck();
+	EEbank = 20;
+	PROGset = 0;
+	PROGMEMbank = 0;
+	
+	while (EEbank != 488)// was 884
+	{
+		ModeSetSRAM[PROGset][PROGMEMbank] = eepromRead(EEbank);
+		EEbank++;
+		PROGMEMbank++;
+		if (PROGMEMbank == 36) {PROGset++; PROGMEMbank=0;}
+		eeCheck();
+	}
+	eeCheck();
+	Serial.print(F(">LOADED.... EEPROM VERSION "));
+	Serial.print(eepromRead(0),DEC);
+	Serial.println(F(" TO SRAM!"));
+	interrupts();
+	
+}// diov eepromLoad
 
 
 
 
 
-//void DumpEEprom (void)
-//{
-//ek = 20;
-//uuu = 1;
-//kk = 1;
-//Serial.println();
-//Serial.println();
-//Serial.println();
-//Serial.println(F("> EEPROM start at 0x20"));
-	//while (uuu < 14)
-	//{// uuu
-			//while  (kk < 3)
-			//{// kk
-					//while (k < 18)
-					//{// k
-						//Serial.print(eepromRead(ek),DEC); Serial.print(F(", "));
-						//ek++;
-						//k++;
-					//}// k
-				//Serial.print(F(" // Mode "));  Serial.print(uuu);  
-				//Serial.print(F(" (Prime ")); 
-    				                         //if (kk==1){Serial.print(F("A"));}
-											 //if (kk==2){Serial.print(F("B"));}
-				//
-				//Serial.println(F(")  EEPROM"));
-				//k=0;
-				//kk++;
-			//}// kk
-		//Serial.println();
-		//kk = 1;	   
-		//uuu++;
-	//}// uuu 
-//}
+
+
+
+void DumpEEprom (void)
+{
+ek = 20;
+uuu = 1;
+kk = 1;
+Serial.println();
+Serial.println();
+Serial.println();
+Serial.println(F("> EEPROM start at 0x20"));
+	while (uuu < 14)
+	{// uuu
+			while  (kk < 3)
+			{// kk
+					while (k < 18)
+					{// k
+						Serial.print(eepromRead(ek),DEC); Serial.print(F(", "));
+						ek++;
+						k++;
+					}// k
+				Serial.print(F(" // Mode "));  Serial.print(uuu);  
+				Serial.print(F(" (Prime ")); 
+    				                         if (kk==1){Serial.print(F("A"));}
+											 if (kk==2){Serial.print(F("B"));}
+				
+				Serial.println(F(")  EEPROM"));
+				k=0;
+				kk++;
+			}// kk
+		Serial.println();
+		kk = 1;	   
+		uuu++;
+	}// uuu 
+}
 
 
 
 
 
-//void DumpSRAM(void)
-//{
-	//Serial.println();
-	//Serial.println();
-	//
-	//EEbank = 20;
-	//ek = 20;
-	//uuu = 1;
-	//kk = 1;
-	//
-	//eeCheck();
-	//EEbank = 20;
-	//PROGset = 0;
-	//PROGMEMbank = 0;
-	//
-	//while (EEbank != 488)// was 884
-	//{// uuu
-		//while  (kk < 3)
-		//{// kk
-			//while (k < 18)
-			//{// k
-				////Serial.print(eepromRead(ek),DEC); Serial.print(", ");
-				//
-				//Serial.print((ModeSetSRAM[PROGset][PROGMEMbank]),DEC); Serial.print(F(", "));
-				//EEbank++;
-				//PROGMEMbank++;
-				//if (PROGMEMbank == 36) {PROGset++; PROGMEMbank=0;}
-				//
-				//ek++;
-				//k++;
-			//}// k
-			//Serial.print(F(" // Mode "));  Serial.print(uuu);
-			//Serial.print(F(" (Prime "));
-										//if (kk==1){Serial.print(F("A"));}
-										//if (kk==2){Serial.print(F("B"));}
-			//Serial.println(F(") SSRAM"));
-			//k=0;
-			//kk++;
-		//}// kk
-		//Serial.println();
-		//kk = 1;
-		//uuu++;
-	//}// uuu
-//}
-//
-//
+void DumpSRAM(void)
+{
+	Serial.println();
+	Serial.println();
+	
+	EEbank = 20;
+	ek = 20;
+	uuu = 1;
+	kk = 1;
+	
+	eeCheck();
+	EEbank = 20;
+	PROGset = 0;
+	PROGMEMbank = 0;
+	
+	while (EEbank != 488)// was 884
+	{// uuu
+		while  (kk < 3)
+		{// kk
+			while (k < 18)
+			{// k
+				//Serial.print(eepromRead(ek),DEC); Serial.print(", ");
+				
+				Serial.print((ModeSetSRAM[PROGset][PROGMEMbank]),DEC); Serial.print(F(", "));
+				EEbank++;
+				PROGMEMbank++;
+				if (PROGMEMbank == 36) {PROGset++; PROGMEMbank=0;}
+				
+				ek++;
+				k++;
+			}// k
+			Serial.print(F(" // Mode "));  Serial.print(uuu);
+			Serial.print(F(" (Prime "));
+										if (kk==1){Serial.print(F("A"));}
+										if (kk==2){Serial.print(F("B"));}
+			Serial.println(F(") SSRAM"));
+			k=0;
+			kk++;
+		}// kk
+		Serial.println();
+		kk = 1;
+		uuu++;
+	}// uuu
+}
+
+#endif
 

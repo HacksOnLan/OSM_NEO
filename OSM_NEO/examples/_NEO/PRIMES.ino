@@ -289,17 +289,10 @@ void PRIMERCOLOR(byte PrimeSelector)
 
 
 
-
-
-
-
-
-
 void BlankCheck(void)
 {
 	if ((CurrentColor == 0) && (ColorMaxCount[VARIATION] == 0) ){ osmPWM(12,12,12,3);osmPWM(0,0,0,60);}
 }
-
 
 
 
@@ -309,9 +302,6 @@ void PRIMEFIXCOLOR(void)// fix color for color change
 	if (CurrentColor == 0) { osmPWM(12,12,12,3); }
 	osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], 60);
 }// void PRIME_STROBE
-
-
-
 
 
 
@@ -335,8 +325,6 @@ void PRIME_TRACE(void)
 
 
 
-
-
 void PRIME_SANDBOX1(void)// PRIME 7
 {// VOID SANDBOX1
 	if (color == 0) { osmPWM(0,0,0,Val1[VARIATION]); }
@@ -346,8 +334,9 @@ void PRIME_SANDBOX1(void)// PRIME 7
 
 void PRIME_SANDBOX2(void)// PRIME 8
 {// VOID SANDBOX2
-	osmPWMSCCxyz(255,255,255,0, 1);// white flash
-	osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
+	osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], Val1[VARIATION]);// first color selected // TIME = VAL1
+	osmPWMSCCxyz(CCR[VARIATION][color+1],CCG[VARIATION][color+1],CCB[VARIATION][color+1],CCS[VARIATION][color+1], ColorTime[VARIATION]);
+	osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], Val1[VARIATION]);// first color selected // TIME = VAL1
 	osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
 	color++;
 }// DIOV SANDBOX2
@@ -355,36 +344,36 @@ void PRIME_SANDBOX2(void)// PRIME 8
 
 void PRIME_SANDBOX3(void)// PRIME 9
 {// VOID SANDBOX3
-	osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], 1);// first color selected
-	osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
-	osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], 1);// first color selected
-	osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
-	color++;
+	//osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], 1);// first color selected
+	//osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
+	//osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], 1);// first color selected
+	//osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
+	//color++;
 }// DIOV SANDBOX3
 
 void PRIME_SANDBOX4(void)// PRIME 10
 {// VOID SANDBOX4
-	osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], Val1[VARIATION]);// first color selected // TIME = VAL1
-	osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
-	osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], Val1[VARIATION]);// first color selected // TIME = VAL1
-	osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
-	color++;
+	//osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], Val1[VARIATION]);// first color selected // TIME = VAL1
+	//osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
+	//osmPWMSCCxyz(CCR[VARIATION][0],CCG[VARIATION][0],CCB[VARIATION][0],CCS[VARIATION][0], Val1[VARIATION]);// first color selected // TIME = VAL1
+	//osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
+	//color++;
 }// DIOV SANDBOX4
 
 void PRIME_SANDBOX5(void)// PRIME 11
 {// VOID SANDBOX5
-	osmPWMSCCxyz(255,255,255,0, 1);// white flash
-	osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
-	osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
-	color++;
+	//osmPWMSCCxyz(255,255,255,0, 1);// white flash
+	//osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
+	//osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
+	//color++;
 }// DIOV SANDBOX5
 
 void PRIME_SANDBOX6(void)// PRIME 12
 {// VOID SANDBOX5
-	osmPWMSCCxyz(255,255,255,0, 1);// white flash
-	osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
-	osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
-	color++;
+	//osmPWMSCCxyz(255,255,255,0, 1);// white flash
+	//osmPWMSCCxyz(CCR[VARIATION][color],CCG[VARIATION][color],CCB[VARIATION][color],CCS[VARIATION][color], ColorTime[VARIATION]);
+	//osmPWMSCCxyz(0,0,0,0,BlankTime[VARIATION]);
+	//color++;
 }// DIOV SANDBOX5
 
 
